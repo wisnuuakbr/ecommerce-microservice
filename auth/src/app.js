@@ -1,6 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const config = require("./config");
+const config = require("./config/config");
 const authMiddleware = require("./middlewares/authMiddleware");
 const AuthController = require("./controllers/authController");
 
@@ -14,16 +13,17 @@ class App {
     }
 
     async connectDB() {
-        await mongoose.connect(config.mongoURI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log("MongoDB connected");
+        try {
+            await config.authenticate();
+            console.log('PostgreSQL connected');
+        } catch (error) {
+            console.error('Unable to connect to the database:', error);
+        }
     }
 
     async disconnectDB() {
-        await mongoose.disconnect();
-        console.log("MongoDB disconnected");
+        await sequelize.close();
+        console.log('PostgreSQL disconnected');
     }
 
     setMiddlewares() {
@@ -42,9 +42,9 @@ class App {
     }
 
     async stop() {
-        await mongoose.disconnect();
+        await this.disconnectDB();
         this.server.close();
-        console.log("Server stopped");
+        console.log('Server stopped');
     }
 }
 
