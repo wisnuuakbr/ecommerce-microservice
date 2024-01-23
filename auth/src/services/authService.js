@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserRepository = require("../repositories/userRepository");
-const config = require("../config/config");
 const User = require("../models/user");
 
 class AuthService {
@@ -27,7 +26,7 @@ class AuthService {
             return { success: false, message: "Invalid username or password" };
         }
 
-        const token = jwt.sign({ id: user._id }, config.jwtSecret);
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
         return { success: true, token };
     }
 

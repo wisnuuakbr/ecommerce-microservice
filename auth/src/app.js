@@ -1,7 +1,8 @@
 const express = require("express");
-const config = require("./config/config");
+const config = require("./config/db");
 const authMiddleware = require("./middlewares/authMiddleware");
 const AuthController = require("./controllers/authController");
+const { sequelize } = require("sequelize");
 
 class App {
     constructor() {
@@ -16,6 +17,9 @@ class App {
         try {
             await config.authenticate();
             console.log('PostgreSQL connected');
+            // sync the database
+            await config.sync();
+            console.log('Database synchronized');
         } catch (error) {
             console.error('Unable to connect to the database:', error);
         }

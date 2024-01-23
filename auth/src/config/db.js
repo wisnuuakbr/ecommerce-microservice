@@ -7,8 +7,7 @@ const sequelize = new Sequelize({
     port: process.env.DB_PORT,
     database: process.env.DB_DATABASE,
     username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    jwtSecret: process.env.JWT_SECRET
+    password: process.env.DB_PASSWORD
 });
 
 module.exports = sequelize;
