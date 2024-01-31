@@ -7,6 +7,7 @@ const productController = new ProductController();
 
 router.post("/", isAuthenticated, productController.createProduct);
 router.post("/buy", isAuthenticated, productController.createOrder);
+router.get("/status", isAuthenticated, productController.getOrderStatus);
 router.get("/", isAuthenticated, productController.getProducts);
 
 module.exports = router;

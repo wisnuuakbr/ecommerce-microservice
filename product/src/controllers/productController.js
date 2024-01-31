@@ -5,7 +5,7 @@ const messageBroker = require("../utils/messageBroker");
 class ProductController {
     constructor() {
         this.createOrder = this.createOrder.bind(this);
-        this.orderStatus = this.orderStatus.bind(this);
+        this.getOrderStatus = this.getOrderStatus.bind(this);
         this.ordersMap = new Map();
     }
 
@@ -63,13 +63,19 @@ class ProductController {
             });
 
             messageBroker.receiveMessage("product", (data) => {
-                const orderData = JSON.parse(JSON.stringify(data));
-                const { orderId } = orderData;
-                const order = this.ordersMap.get(orderId);
-                if (order) {
-                    // update the order in the map
-                    this.ordersMap.set(orderId, { ...order, ...orderData, status: 'completed' });
-                    console.log("Updated order:", order);
+                try {
+                    const orderData = JSON.parse(JSON.stringify(data));
+                    const { orderId } = orderData;
+                    const order = this.ordersMap.get(orderId);
+                    if (order) {
+                        // update the order in the map
+                        this.ordersMap.set(orderId, { ...order, ...orderData, status: 'completed' });
+                        console.log("Updated order:", order);
+                    } else {
+                        console.error("Received message for unknown orderId:", orderId);
+                    }
+                } catch (error) {
+                    console.error("Error processing received message:", error);
                 }
             });
 
@@ -80,6 +86,7 @@ class ProductController {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 order = this.ordersMap.get(orderId);
             }
+
             // Once the order is marked as completed, return the complete order details
             return res.status(201).json(order);
         } catch (error) {
@@ -88,18 +95,13 @@ class ProductController {
         }
     }
 
-    async orderStatus(req, res, next) {
-        try {
-            const token = req.headers.authorization;
-            if (!token) {
-                return res.status(401).json({ message: "Unauthorized" });
-            }
-            const product = await Product.findAll({});
-            res.status(200).json(product);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Server error" });
+    async getOrderStatus(req, res, next) {
+        const { orderId } = req.params;
+        const order = this.ordersMap.get(orderId);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
         }
+        return res.status(200).json(order);
     }
 
     async getProducts(req, res, next) {
