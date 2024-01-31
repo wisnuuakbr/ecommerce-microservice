@@ -1,5 +1,5 @@
-const { DataTypes } = require("sequelize");
 const config = require("../config/db");
+const { DataTypes } = require("sequelize");
 
 const User = config.define('User', {
     username: {
@@ -15,6 +15,17 @@ const User = config.define('User', {
         allowNull: false,
         unique: true,
     },
+}, {
+    tableName: 'users',
+    timestamps: true
 });
+// Sync the model with the database
+User.sync()
+    .then(() => {
+        console.log('User table synced successfully');
+    })
+    .catch(error => {
+        console.error('Error syncing user table:', error)
+    })
 
 module.exports = User;

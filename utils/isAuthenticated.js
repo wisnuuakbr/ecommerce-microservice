@@ -15,7 +15,7 @@ function isAuthenticated(req, res, next) {
         req.user = Token;
         next();
     } catch (error) {
-        console.error(err);
+        console.error(error);
         return res.status(401).json({ message: 'Unauthorized' });
     }
 }

@@ -2,7 +2,6 @@ const express = require("express");
 const config = require("./config/db");
 const authMiddleware = require("./middlewares/authMiddleware");
 const AuthController = require("./controllers/authController");
-const { sequelize } = require("sequelize");
 
 class App {
     constructor() {
@@ -16,18 +15,15 @@ class App {
     async connectDB() {
         try {
             await config.authenticate();
-            console.log('PostgreSQL connected');
-            // sync the database
-            await config.sync();
-            console.log('Database synchronized');
+            console.log("PostgreSQL connected");
         } catch (error) {
-            console.error('Unable to connect to the database:', error);
+            console.error("Unable to connect to the database:", error);
         }
     }
 
     async disconnectDB() {
-        await sequelize.close();
-        console.log('PostgreSQL disconnected');
+        await config.close();
+        console.log("PostgreSQL disconnected");
     }
 
     setMiddlewares() {
@@ -48,7 +44,7 @@ class App {
     async stop() {
         await this.disconnectDB();
         this.server.close();
-        console.log('Server stopped');
+        console.log("Server stopped");
     }
 }
 
