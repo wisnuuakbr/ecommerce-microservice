@@ -1,3 +1,3 @@
 # simple-Ecommerce-restAPI
 
-A microservice for ecommerce using Node Js, Express Js, MongoDB, and RabbitMQ
+A microservice for ecommerce
