@@ -10,10 +10,10 @@ class MessageBroker {
         setTimeout(async () => {
             try {
                 const connection = await amqp.connect("amqp://localhost:5672");
+                console.log("RabbitMQ connected");
                 this.channel = await connection.createChannel();
                 // Declare the queue if it doesn't exist
                 await this.channel.assertQueue("product");
-                console.log("RabbitMQ connected");
             } catch (error) {
                 console.error("Failed to connect to RabbitMQ:", error.message);
             }

@@ -55,7 +55,7 @@ class ProductController {
                 username: req.user.username
             });
 
-            await messageBroker.sendMessage("orders", {
+            await messageBroker.sendMessage("order", {
                 product,
                 username: req.user.username,
                 // include the order ID in the message to orders queue
