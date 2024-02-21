@@ -42,7 +42,7 @@ JWT_SECRET  =   your_secret_key
 _this will run server with nodemon enabled_
 
 ```bash
-$ npm run dev
+$ npm run start
 ```
 
 <!-- ## Endpoints
