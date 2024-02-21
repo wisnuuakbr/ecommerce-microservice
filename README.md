@@ -45,10 +45,10 @@ _this will run server with nodemon enabled_
 $ npm run dev
 ```
 
-## Endpoints
+<!-- ## Endpoints
 
 These are the endpoints we will use to create, read, update and delete the course data.
 
 ```bash
 DROP ENDPOINT HERE!
-```
+``` -->
