@@ -47,6 +47,11 @@ class ProductController {
             const product_ids = req.body.product_id.map(id => parseInt(id));
             const product = await Product.findAll({ where: { id: product_ids } });
 
+            // Validasi apakah produk tersedia
+            if (product.length !== product_ids.length) {
+                return res.status(404).json({ message: "One or more products not found" });
+            }
+
             // generate uuid
             const orderId = uuid.v4();
             this.ordersMap.set(orderId, {
@@ -55,14 +60,14 @@ class ProductController {
                 username: req.user.username
             });
 
-            await messageBroker.sendMessage("order", {
+            await messageBroker.publishMessage("order", {
                 product,
                 username: req.user.username,
                 // include the order ID in the message to orders queue
                 orderId,
             });
 
-            messageBroker.receiveMessage("product", (data) => {
+            messageBroker.consumeMessage("product", (data) => {
                 try {
                     const orderData = JSON.parse(JSON.stringify(data));
                     const { orderId } = orderData;
@@ -72,7 +77,7 @@ class ProductController {
                         this.ordersMap.set(orderId, { ...order, ...orderData, status: 'completed' });
                         console.log("Updated order:", order);
                     } else {
-                        console.error("Received message for unknown orderId:", orderId);
+                        console.error("Received message for unknown order id:", orderId);
                     }
                 } catch (error) {
                     console.error("Error processing received message:", error);
@@ -86,7 +91,6 @@ class ProductController {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 order = this.ordersMap.get(orderId);
             }
-
             // Once the order is marked as completed, return the complete order details
             return res.status(201).json(order);
         } catch (error) {

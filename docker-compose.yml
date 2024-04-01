@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
     auth:
-        build: ./auth
+        build:
+            context: ./auth
+        image: auth_services
         ports:
             - "3000:3000"
         env_file:
@@ -10,12 +12,56 @@ services:
         networks:
             - ecommerce
 
+    rabbitmq:
+        image: rabbitmq:3.8-management-alpine
+        container_name: "rabbitmq"
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        volumes:
+            - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+            - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+        networks:
+            - ecommerce
+
+    order:
+        build:
+            context: ./order
+        image: order_services
+        ports:
+            - "3002:3002"
+        depends_on:
+            - rabbitmq
+        environment:
+            - RABBITMQ_URL=amqp://rabbitmq:5672
+        env_file:
+            - ./order/.env
+        networks:
+            - ecommerce
+
+    product:
+        build:
+            context: ./product
+        image: product_services
+        ports:
+            - "3001:3001"
+        depends_on:
+            - rabbitmq
+        environment:
+            - RABBITMQ_URL=amqp://rabbitmq:5672
+        env_file:
+            - ./product/.env
+        networks:
+            - ecommerce
+
     api-gateway:
-        build: ./api-gateway
+        build:
+            context: ./api-gateway
+        image: api-gateway_services
         ports:
             - "3003:3003"
-        # environment:
-        #     - RABBITMQ_URL=amqp://rabbitmq:5672
+        environment:
+            - RABBITMQ_URL=amqp://rabbitmq:5672
         networks:
             - ecommerce
 

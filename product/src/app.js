@@ -33,7 +33,7 @@ class App {
     }
 
     setRoutes() {
-        this.app.use("/api/products", productRouter);
+        this.app.use("/product", productRouter);
     }
 
     setMessageBroker() {

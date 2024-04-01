@@ -17,7 +17,7 @@ describe("User Authentication", () => {
     });
 
     after(async () => {
-        await app.authController.authService.deleteTestUsers();
+        await app.authController.authService.deleteTestUser();
         await app.disconnectDB();
         app.stop();
     });
@@ -27,7 +27,7 @@ describe("User Authentication", () => {
             const res = await chai
                 .request(app.app)
                 .post("/register")
-                .send({ username: "testuser", password: "password" });
+                .send({ username: "testuser", password: "password", email: "test@example.com" });
 
             expect(res).to.have.status(200);
             expect(res.body).to.have.property("_id");
@@ -38,7 +38,7 @@ describe("User Authentication", () => {
             const res = await chai
                 .request(app.app)
                 .post("/register")
-                .send({ username: "testuser", password: "password" });
+                .send({ username: "testuser", password: "password", email: "test@example.com" });
 
             expect(res).to.have.status(400);
             expect(res.body).to.have.property("message", "Username already taken");

@@ -17,10 +17,10 @@ class MessageBroker {
             } catch (error) {
                 console.error("Failed to connect to RabbitMQ:", error.message);
             }
-        }, 10000);
+        }, 5000);
     }
 
-    async sendMessage(queue, message) {
+    async publishMessage(queue, message) {
         if (!this.channel) {
             console.error("No channel available");
             return;
@@ -36,17 +36,19 @@ class MessageBroker {
         }
     }
 
-    async receiveMessage(queue, callback) {
+    async consumeMessage(queue, callback) {
         if (!this.channel) {
             console.error("No channel available");
+            return;
         }
-
         try {
             await this.channel.consume(queue, (message) => {
-                const messageContent = message.content.toString();
-                const parsedMessage = JSON.parse(messageContent);
-                callback(parsedMessage);
-                this.channel.ack(message);
+                if (message !== null) {
+                    const content = message.content.toString();
+                    const parsedContent = JSON.parse(content);
+                    callback(parsedContent);
+                    this.channel.ack(message);
+                }
             });
         } catch (error) {
             console.log(error);

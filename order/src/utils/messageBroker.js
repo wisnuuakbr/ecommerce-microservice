@@ -68,7 +68,7 @@ class MessageBroker {
                     // Include orderId in the message
                     const { user, products: savedProducts, totalPrice } = newOrder.toJSON();
                     this.channel.sendToQueue(
-                        "order",
+                        "product",
                         Buffer.from(JSON.stringify({ orderId, user, products: savedProducts, totalPrice }))
                     );
                 });

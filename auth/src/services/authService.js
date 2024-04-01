@@ -10,8 +10,25 @@ class AuthService {
 
     // Get User
     async findUserByUsername(username) {
-        const user = await User.findOne({ username });
+        const user = await User.findOne({
+            where: {
+                username: username,
+            },
+        });
         return user;
+    }
+
+    // Get User by ID
+    async getUserById(userId) {
+        try {
+            const user = await User.findByPk(userId);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            return user;
+        } catch (error) {
+            throw new Error(error.message);
+        }
     }
 
     // Login User
@@ -26,7 +43,7 @@ class AuthService {
             return { success: false, message: "Invalid username or password" };
         }
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         return { success: true, token };
     }
 

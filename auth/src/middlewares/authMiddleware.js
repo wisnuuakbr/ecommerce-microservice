@@ -10,7 +10,7 @@ module.exports = function (req, res, next) {
         const decode = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decode;
         next();
-    } catch (e) {
+    } catch (error) {
         console.error("Error validating token:", error.message);
         res.status(401).json({ message: "Authorization failed: Invalid token" });
     }

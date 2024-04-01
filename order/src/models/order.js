@@ -2,18 +2,22 @@ const Product = require("../../../product/src/models/product");
 const config = require("../config/db");
 const { DataTypes } = require("sequelize");
 
-const Order = config.define('Orders', {
+const Order = config.define('Order', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
     product: {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
         allowNull: false,
-        references: 'product',
         validate: {
             notEmpty: {
                 msg: 'Product is required'
             }
         }
     },
-    totalPrice: {
+    total_price: {
         type: DataTypes.DECIMAL,
         allowNull: true,
         validate: {

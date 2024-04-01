@@ -1,6 +1,4 @@
 const express = require("express");
-// const Order = require("./models/order");
-// const amqp = require("amqplib");
 const config = require("./config/db");
 const MessageBroker = require("./utils/messageBroker");
 
@@ -9,7 +7,6 @@ class App {
         this.app = express();
         this.connectDB();
         this.setMessageBroker();
-        // this.setRoutes();
     }
 
     async connectDB() {
@@ -30,10 +27,6 @@ class App {
         MessageBroker.connect();
         MessageBroker.setupOrderConsumer();
     }
-
-    // setRoutes() {
-    //     this.app.use("/api/orders", orderRouter);
-    // }
 
     start() {
         this.server = this.app.listen(3002, () => console.log("Server started on port 3002"));
