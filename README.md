@@ -1,6 +1,6 @@
 # Ecommerce Microservice
 
-A microservice for ecommerce using Node Js, Express Js, PostgreSQL, Docker, and RabbitMQ
+A microservices ecommerce using Node Js, Express Js, PostgreSQL, Docker, and RabbitMQ
 
 ## Requirements
 
